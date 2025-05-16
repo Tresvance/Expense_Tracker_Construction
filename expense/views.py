@@ -6,10 +6,12 @@ from django.http import HttpResponse
 from django.contrib.auth.hashers import check_password,make_password
 
 # Home Page
+
 def home(request):
     return render(request, 'home.html')
 
 # Owner Registration
+
 def register_owner(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -33,7 +35,6 @@ def register_owner(request):
         return redirect('login')
 
     return render(request, 'register_owner.html')
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -65,6 +66,8 @@ def login_view(request):
     
     return render(request, 'login.html')
 # Logout
+
+
 def logout_view(request):
     request.session.flush()
     return redirect('home')
@@ -130,9 +133,6 @@ def owner_dashboard(request):
         'sites': sites
     })
 
-
-    
-    
     
 def manager_dashboard(request):
     manager_id = request.session.get('manager_id')
@@ -235,3 +235,26 @@ def site_detail(request, site_id):
         'total_expenses': total_expenses,
         'images': images,
     })
+    
+
+def update_expense(request):
+    if request.method == 'POST':
+        expense_id = request.POST.get('expense_id')
+        quantity = request.POST.get('quantity')
+        total_cost = request.POST.get('total_cost')
+
+        try:
+            expense = get_object_or_404(SiteExpense, id=expense_id)
+            expense.quantity = int(quantity)
+            expense.total_cost = float(total_cost)
+            expense.save()
+            messages.success(request, 'Expense updated successfully.')
+
+            # Redirect to the site_detail page of the site this expense belongs to
+            return redirect('site_detail', site_id=expense.site.id)
+
+        except Exception as e:
+            messages.error(request, f'Update failed: {e}')
+            return redirect('owner_dashboard')
+
+    return redirect('manager_dashboard')
