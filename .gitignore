@@ -1,0 +1,48 @@
+elearn
+# Virtual environment folder
+venv/
+env/
+
+
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore environment files
+.env
+*.venv/
+colenv/
+venv/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignore database and migration files
+db.sqlite3
+*.sqlite3
+*.log
+*.pot
+*.pyc
+
+
+# Django migrations (optional, except the initial migration)
+# migrations/
+# Ignore media and static files
+media/
+staticfiles/
+
+# Ignore VS Code settings
+.vscode/
+.idea/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore compiled and cache files
+*.log
+*.out
+*.class
+*.lock
+*.swp
