@@ -10,5 +10,7 @@ urlpatterns = [
     path('dashboard/manager/', views.manager_dashboard, name='manager_dashboard'),
 
     path('site/<int:site_id>/', views.site_detail, name='site_detail'),
+    path('expense/update/', views.update_expense, name='update_expense'),
+
 
 ]

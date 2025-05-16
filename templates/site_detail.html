@@ -101,36 +101,50 @@
     </div>
 
     <!-- Expenses Grouped by Date -->
-    <div class="mb-5">
-      <h3>Expenses Grouped by Date</h3>
-      {% if expenses_by_date %}
-        {% for date, expenses in expenses_by_date.items %}
-          <h5 class="mt-4">{{ date }}</h5>
-          <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle">
-              <thead class="table-light">
+   <!-- Expenses Grouped by Date -->
+<div class="mb-5">
+  <h3>Expenses Grouped by Date</h3>
+  {% if expenses_by_date %}
+    {% for date, expenses in expenses_by_date.items %}
+      <h5 class="mt-4">{{ date }}</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Material Name</th>
+              <th>Quantity</th>
+              <th>Total Cost (RS)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for expense in expenses %}
+              <form method="post" action="{% url 'update_expense' %}">
+                {% csrf_token %}
+                <input type="hidden" name="expense_id" value="{{ expense.id }}">
                 <tr>
-                  <th>Material Name</th>
-                  <th>Quantity</th>
-                  <th>Total Cost (RS)</th>
+                  <td>{{ expense.material_name }}</td>
+                  <td>
+                    <input type="number" name="quantity" value="{{ expense.quantity }}" class="form-control" required>
+                  </td>
+                  <td>
+                    <input type="number" name="total_cost" value="{{ expense.total_cost }}" step="0.01" class="form-control" required>
+                  </td>
+                  <td>
+                    <button type="submit" class="btn btn-sm btn-success">Update</button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {% for expense in expenses %}
-                  <tr>
-                    <td>{{ expense.material_name }}</td>
-                    <td>{{ expense.quantity }}</td>
-                    <td>RS {{ expense.total_cost }}</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-muted">No expenses added yet.</p>
-      {% endif %}
-    </div>
+              </form>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">No expenses added yet.</p>
+  {% endif %}
+</div>
+
 
   </div>
 
