@@ -27,7 +27,7 @@ db.sqlite3
 
 
 # Django migrations (optional, except the initial migration)
-# migrations/
+migrations/
 # Ignore media and static files
 media/
 staticfiles/
