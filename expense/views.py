@@ -116,7 +116,7 @@ def owner_dashboard(request):
             if assigned_manager_ids:
                 managers_to_assign = Manager.objects.filter(id__in=assigned_manager_ids, owner=owner)
                 site.assigned_managers.set(managers_to_assign)
-            messages.success(request, f"Site '{site_name}' added and managers assigned.")
+            messages.success(request, f"Site '{site_name}' added and manager assigned.")
 
     managers = Manager.objects.filter(owner=owner)
     sites = Site.objects.filter(owner=owner)
