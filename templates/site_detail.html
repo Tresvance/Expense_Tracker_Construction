@@ -4,151 +4,172 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Site Details</title>
-  <!-- Bootstrap 5 CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      background-color: #343a40;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      color: #ffffff;
+      padding: 12px 20px;
+      display: block;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #495057;
+    }
+    .content {
+      padding: 30px;
+    }
+    .card {
+      border-radius: 12px;
+    }
+    h3, h4 {
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container my-5">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-3 col-lg-2 sidebar text-white">
+        <h4 class="text-center text-white">Menu</h4>
+        <a href="{% url 'manager_dashboard' %}">Manager Dashboard</a>
+        <a href="#expenseForm">Add Expense</a>
+        <a href="#uploadImage">Upload Image</a>
+        <a href="#siteImages">Site Images</a>
+        <a href="#expensesTable">Expense Table</a>
+      </nav>
 
-    <div class="mb-4">
-      <h2 class="mb-1">Site: {{ site.name }}</h2>
-      <p class="text-muted">Location: {{ site.location }}</p>
-      <div class="d-flex gap-4">
-        <!-- <h5>Average Progress: <span class="badge bg-primary">{{ avg_progress }}%</span></h5> -->
-        <h5>Total Expenses: <span class="badge bg-success">RS {{ total_expenses }}</span></h5>
-        <a href="{% url 'manager_dashboard' %}" class="btn btn-secondary mb-3">← Back to Manager Dashboard</a>
+      <!-- Main Content -->
+      <main class="col-md-9 col-lg-10 content">
+        <div class="mb-4">
+          <h2 class="fw-bold">Site: {{ site.name }}</h2>
+          <p class="text-muted">📍 Location: {{ site.location }}</p>
+        </div>
 
-      </div>
-    </div>
-
-    <!-- Messages -->
-    {% if messages %}
-      <div class="mb-4">
-        <ul class="list-group">
-          {% for message in messages %}
-          <li class="list-group-item {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
-            {{ message }}
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-
-    <!-- Add Expense Form -->
-    <div class="card mb-5 shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Upload New Expense</h4>
-      </div>
-      <div class="card-body">
-        <form method="post" class="row g-3">
-          {% csrf_token %}
-          <input type="hidden" name="add_expense" value="1">
-
-          <div class="col-md-6">
-            <label for="material_name" class="form-label">Material Name</label>
-            <input type="text" class="form-control" id="material_name" name="material_name" required />
+        <!-- Messages -->
+        {% if messages %}
+          <div class="mb-4">
+            <ul class="list-group">
+              {% for message in messages %}
+                <li class="list-group-item alert-{{ message.tags|default:'info' }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
           </div>
+        {% endif %}
 
-          <div class="col-md-3">
-            <label for="quantity" class="form-label">Quantity</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required />
+        <!-- Add Expense Form -->
+        <div class="card shadow-sm mb-5" id="expenseForm">
+          <div class="card-header bg-primary text-white">
+            <h4>Upload New Expense</h4>
           </div>
-
-          <div class="col-md-3">
-            <label for="total_cost" class="form-label">Total Cost ($)</label>
-            <input type="number" step="0.01" class="form-control" id="total_cost" name="total_cost" min="0" required />
+          <div class="card-body">
+            <form method="post" class="row g-3">
+              {% csrf_token %}
+              <input type="hidden" name="add_expense" value="1">
+              <div class="col-md-6">
+                <label class="form-label">Material Name</label>
+                <input type="text" class="form-control" name="material_name" required />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" class="form-control" name="quantity" min="1" required />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Total Cost (₹)</label>
+                <input type="number" step="0.01" class="form-control" name="total_cost" min="0" required />
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Add Expense</button>
+              </div>
+            </form>
           </div>
+        </div>
 
-
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary">Add Expense</button>
+        <!-- Upload Site Image -->
+        <div class="card shadow-sm mb-5" id="uploadImage">
+          <div class="card-header bg-dark text-white">
+            <h4>Upload Site Image</h4>
           </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Upload Site Image Form -->
-    <div class="card mb-5 shadow-sm">
-      <div class="card-header bg-secondary text-white">
-        <h4 class="mb-0">Upload Site Image</h4>
-      </div>
-      <div class="card-body">
-        <form method="post" enctype="multipart/form-data" class="row g-3">
-          {% csrf_token %}
-          <input type="hidden" name="add_image" value="1" />
-          <div class="col-md-6">
-            <input class="form-control" type="file" name="site_image" accept="image/*" required />
+          <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="row g-3">
+              {% csrf_token %}
+              <input type="hidden" name="add_image" value="1" />
+              <div class="col-md-6">
+                <input class="form-control" type="file" name="site_image" accept="image/*" required />
+              </div>
+              <div class="col-md-6">
+                <button type="submit" class="btn btn-dark">Upload Image</button>
+              </div>
+            </form>
           </div>
-          <div class="col-md-6">
-            <button type="submit" class="btn btn-secondary">Upload Image</button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
 
-    <!-- Site Images -->
-    <div class="mb-5">
-      <h3>Site Images</h3>
-      {% if images %}
-      <div class="d-flex flex-wrap gap-3">
-        {% for img in images %}
-          <img src="{{ img.image.url }}" alt="Site Image" class="img-thumbnail" style="width: 150px; height: 100px; object-fit: cover;" />
-        {% endfor %}
-      </div>
-      {% else %}
-      <p class="text-muted">No images uploaded yet.</p>
-      {% endif %}
-    </div>
+        <!-- Site Images -->
+        <div class="mb-5" id="siteImages">
+          <h3>📸 Site Images</h3>
+          {% if images %}
+            <div class="d-flex flex-wrap gap-3">
+              {% for img in images %}
+                <img src="{{ img.image.url }}" class="img-thumbnail" style="width: 150px; height: 100px; object-fit: cover;" />
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted">No images uploaded yet.</p>
+          {% endif %}
+        </div>
 
-    <!-- Expenses Grouped by Date -->
-   <!-- Expenses Grouped by Date -->
-<div class="mb-5">
-  <h3>Expenses Grouped by Date</h3>
-  {% if expenses_by_date %}
-    {% for date, expenses in expenses_by_date.items %}
-      <h5 class="mt-4">{{ date }}</h5>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>Material Name</th>
-              <th>Quantity</th>
-              <th>Total Cost (RS)</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for expense in expenses %}
-              <form method="post" action="{% url 'update_expense' %}">
-                {% csrf_token %}
-                <input type="hidden" name="expense_id" value="{{ expense.id }}">
-                <tr>
-                  <td>{{ expense.material_name }}</td>
-                  <td>
-                    <input type="number" name="quantity" value="{{ expense.quantity }}" class="form-control" required>
-                  </td>
-                  <td>
-                    <input type="number" name="total_cost" value="{{ expense.total_cost }}" step="0.01" class="form-control" required>
-                  </td>
-                  <td>
-                    <button type="submit" class="btn btn-sm btn-success">Update</button>
-                  </td>
-                </tr>
-              </form>
+        <!-- Expenses Grouped by Date -->
+        <div class="mb-5" id="expensesTable">
+          <h3>💰 Expenses Grouped by Date</h3>
+          {% if expenses_by_date %}
+            {% for date, expenses in expenses_by_date.items %}
+              <h5 class="mt-4 text-primary">{{ date }}</h5>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle shadow-sm">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Material</th>
+                      <th>Quantity</th>
+                      <th>Total Cost (₹)</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for expense in expenses %}
+                      <form method="post" action="{% url 'update_expense' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="expense_id" value="{{ expense.id }}">
+                        <tr>
+                          <td>{{ expense.material_name }}</td>
+                          <td><input type="number" name="quantity" value="{{ expense.quantity }}" class="form-control" required></td>
+                          <td><input type="number" name="total_cost" value="{{ expense.total_cost }}" class="form-control" required></td>
+                          <td><button class="btn btn-sm btn-success">Update</button></td>
+                        </tr>
+                      </form>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% endfor %}
-  {% else %}
-    <p class="text-muted">No expenses added yet.</p>
-  {% endif %}
-</div>
-
-
+          {% else %}
+            <p class="text-muted">No expenses added yet.</p>
+          {% endif %}
+        </div>
+      </main>
+    </div>
   </div>
 
-  <!-- Bootstrap 5 JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
