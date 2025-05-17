@@ -220,19 +220,13 @@ def site_detail(request, site_id):
     for expense in site.expenses.all().order_by('-date'):
         expenses_by_date.setdefault(expense.date, []).append(expense)
 
-    # Average completion percentage across all expenses
-    avg_progress = site.expenses.aggregate(avg=Avg('completion_percentage'))['avg'] or 0
-
     # Sum all expenses total_cost
-    total_expenses = site.expenses.aggregate(total=Sum('total_cost'))['total'] or 0
 
     images = site.images.all()
 
     return render(request, 'site_detail.html', {
         'site': site,
         'expenses_by_date': expenses_by_date,
-        'avg_progress': round(avg_progress, 2),
-        'total_expenses': total_expenses,
         'images': images,
     })
     
